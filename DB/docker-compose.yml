@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_HOST_PORT}:3306"
+    volumes:
+      - ./data/EsquemaPFG.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+      
