@@ -1,8 +1,13 @@
+const fs = require("fs");
+const path = require("path");
+const Sequelize = require("sequelize");
+
 const db = {};
+
+let sequelize;
 db.sequelize = sequelize;
 
 db.sequelize
-  .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
   })
