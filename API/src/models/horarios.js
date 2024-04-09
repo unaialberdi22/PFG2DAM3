@@ -1,5 +1,5 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     const Horarios = sequelize.define('horarios', {
         idViaje: {
             type: DataTypes.STRING(255),
@@ -17,4 +17,5 @@ module.exports = (sequelize, DataTypes) => {
       }, {
         timestamps: false
       });
+      return Horarios
 }

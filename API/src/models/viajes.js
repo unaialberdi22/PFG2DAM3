@@ -1,5 +1,5 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     const Viajes = sequelize.define('viajes', {
         idRuta: {
             type: DataTypes.STRING(255),
@@ -14,4 +14,5 @@ module.exports = (sequelize, DataTypes) => {
       }, {
         timestamps: false
       });
+      return Viajes
 }

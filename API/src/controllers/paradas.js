@@ -1,11 +1,9 @@
-const Paradas = require('../models').paradas;
-const { sequelize } = require("../models/index")
 
-module.exports = {
+import db from "../models/index.js"
 
-    getAllParadas(req, res) {
+    const getAllParadas = (req, res) => {
     // Use the Stage model to find all stages, including associated TagStage and Tag models
-        return Paradas.findAll({
+        return db.paradas.findAll({
             order: [
                 ['idParada', 'ASC'],
             ]
@@ -19,4 +17,7 @@ module.exports = {
             error: error
         })); // If there's an error during retrieval, send a 400 Bad Request response with the error information
     }
-}
+
+    export  {
+        getAllParadas
+    }

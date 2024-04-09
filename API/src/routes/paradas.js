@@ -1,5 +1,6 @@
-const paradasController = require("../controllers").paradas;
+import * as paradas from "../controllers/paradas.js"
+import { Router } from "express";
 
-module.exports = (app) => {
-    app.get("getAllParadas", paradasController.getAllParadas);
-};
+const paradasRouter = Router()
+paradasRouter.get("/getAllParadas", paradas.getAllParadas);
+export default paradasRouter

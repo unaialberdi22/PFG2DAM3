@@ -1,5 +1,5 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     const Agencias = sequelize.define('agencias', {
         idAgencia: {
             type: DataTypes.STRING(255),
@@ -20,4 +20,5 @@ module.exports = (sequelize, DataTypes) => {
       }, {
         timestamps: false
       });
+      return Agencias
 }

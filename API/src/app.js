@@ -1,6 +1,6 @@
-const express = require('express')
+import express from "express"
+import router from "./routes/index.js";
 const app = express();
-const { sequelize } = require("./models/index")
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -8,8 +8,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-requested-with');
   next();
 });
-
-require("./routes/paradas")(app);
+app.use(router)
 
 app.get('/', (req, res) => {
     res.send("Hello from Express!")
@@ -17,4 +16,3 @@ app.get('/', (req, res) => {
   app.listen(4000, () => {
     console.log('Listening on port 4000')
   })
-  module.exports = app;
