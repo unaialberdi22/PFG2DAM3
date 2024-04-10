@@ -29,9 +29,10 @@ return(
         {paradas.map((parada, index) =>{
             return <Marker key={index} position={[parada.latitud, parada.longitud]} icon={new Icon({ iconUrl: markerIconPng, iconAnchor: [13, 10] })}>
             <Popup>
-                <div></div>
-                <p>id estacion: {parada.idParada}</p>
-                <h3>{parada.nombreParada}</h3>
+                <div>
+                    <p>id estacion: {parada.idParada}</p>
+                    <h3>Estacion de tren {parada.nombreParada}</h3>
+                </div>
             </Popup>
 
             </Marker>
