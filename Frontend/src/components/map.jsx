@@ -6,6 +6,9 @@ import {Icon} from 'leaflet';
 import axios from "axios"
 import { useEffect, useState } from "react";
 
+//imagenes
+import minus from '../images/minus.png';
+
 export default function Map() {
 
 const [paradas, setParadas] = useState([])    
@@ -30,8 +33,11 @@ return(
             return <Marker key={index} position={[parada.latitud, parada.longitud]} icon={new Icon({ iconUrl: markerIconPng, iconAnchor: [13, 10] })}>
             <Popup>
                 <div>
+                    <div className="popupHeader">
+                        <h2>Estacion de tren <b>{parada.nombreParada}</b></h2>
+                        <img title={(parseInt(parada.accesoMinus) === 1) ? 'Acceso para minusválidos' : ''} src={minus} style={{ visibility: (parseInt(parada.accesoMinus) === 2) ? 'hidden' : 'visible' }} width={20} height={20} alt="icono Minusvalidos" />
+                    </div>
                     <p>id estacion: {parada.idParada}</p>
-                    <h3>Estacion de tren {parada.nombreParada}</h3>
                 </div>
             </Popup>
 
