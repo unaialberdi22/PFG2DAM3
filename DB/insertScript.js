@@ -112,6 +112,7 @@ connection.connect(err => {
             'ALTER TABLE `viajes` ADD FOREIGN KEY (`idRuta`) REFERENCES `rutas` (`idRuta`);',
             'ALTER TABLE `horarios` ADD FOREIGN KEY (`idViaje`) REFERENCES `viajes` (`idViaje`);',
             'ALTER TABLE `horarios` ADD FOREIGN KEY (`idParada`) REFERENCES `paradas` (`idParada`);',
+            'ALTER TABLE `rutas` ADD FOREIGN KEY (`tipo`) REFERENCES `tipoTrenes` (`idtipo`);',
           ];
 
           console.log('Ejecutando consultas de llaves foráneas...');

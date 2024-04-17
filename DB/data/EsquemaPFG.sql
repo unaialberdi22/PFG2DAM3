@@ -32,3 +32,9 @@ CREATE TABLE `horarios` (
   `idParada` VARCHAR(255),
   `seqParada` VARCHAR(255)
 );
+
+CREATE TABLE `tipoTrenes` (
+  `idtipo` VARCHAR(255),
+  `nombre` VARCHAR(255),
+  `imagen` VARCHAR(255)
+);
