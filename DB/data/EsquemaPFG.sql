@@ -6,16 +6,10 @@ CREATE TABLE `paradas` (
   `accesoMinus` VARCHAR(255)
 );
 
-CREATE TABLE `tipoTrenes` (
-  `idTipo` VARCHAR(255),
-  `nombre` VARCHAR(255),
-  `imagen` VARCHAR(255)
-);
-
 CREATE TABLE `rutas` (
   `idRuta` VARCHAR(255) PRIMARY KEY,
   `idAgencia` VARCHAR(255),
-  `idTipo` VARCHAR(255)
+  `tipo` VARCHAR(255)
 );
 
 CREATE TABLE `agencias` (

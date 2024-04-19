@@ -23,6 +23,10 @@ useEffect(() => {
     })
 }, [])    
 
+function getData(idparada){
+    console.log("Has clickado en" + idparada)
+}
+
 return(
     <div className="Mapa">
     <MapContainer center={[40.463667, -3.74922]} zoom={6} scrollWheelZoom={true} style={{ height: "100%" }}>
