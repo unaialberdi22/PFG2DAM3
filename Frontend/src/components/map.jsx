@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 
 //imagenes
 import minus from '../images/minus.png';
+import getData from "../functions/getRutasByParadaId";
 
 export default function Map() {
-
 const [paradas, setParadas] = useState([])
 const [rutaSelecionada, setRutaSeleccionada] = useState([])      
 
@@ -24,17 +24,7 @@ useEffect(() => {
     })
 }, [])    
 
-function getData(idParada){
-    console.log("Has clickado en parada con id " + idParada)
-    axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${idParada}`).then(response => {
-        if(response.data?.rutas){
-            setRutaSeleccionada(response.data.rutas);
-            console.log("rutas recibidas")
-        }
-    }).catch(error => {
-        console.error("Error al obtener las rutas:", error);
-    });
-}
+
 
 return(
     <div className="Mapa">
@@ -45,21 +35,22 @@ return(
         {paradas.map((parada, index) =>{
             return <Marker key={index} eventHandlers={{
                 click: (e) => {
-                  getData(parada.idParada)
+                  getData(parada.idParada, setRutaSeleccionada)
                 },
               }} position={[parada.latitud, parada.longitud]} icon={new Icon({ iconUrl: markerIconPng, iconAnchor: [13, 10] })}>
             <Popup>
-                <div>
+                <div style={{height: "50vh", width: "auto"}}>
                     <div className="popupHeader">
                         <h2>Estacion de tren <b>{parada.nombreParada}</b></h2>
                     </div>
                     <div className="insignias">
-                        {[...new Set(rutaSelecionada.map(ruta => ruta.tipo))].map((tipo, index) => (
-                                <p key={index}>{tipo}</p>
-                        ))}
-                        <img title={(parseInt(parada.accesoMinus) === 1) ? 'Acceso para minusválidos' : ''} src={minus} style={{ visibility: (parseInt(parada.accesoMinus) === 2) ? 'hidden' : 'visible' }} width={20} height={20} alt="icono Minusvalidos" />
+                        {[...new Set(rutaSelecionada.map(ruta => ruta.tipo))].map((tipo, index) => {
+                                // <p key={index}>{tipo}</p>
+                                return<img title={tipo.toUpperCase()} src={"/src/images/" + tipo + ".png"}  width={20.2} height={24.4} alt="icono Minusvalidos" />
+                        })}
+                        <img title={(parseInt(parada.accesoMinus) === 1) ? 'Acceso para minusválidos' : ''} src={minus} style={{ visibility: (parseInt(parada.accesoMinus) === 2) ? 'hidden' : 'visible' }} width={24.4} height={24.4} alt="icono Minusvalidos" />
                     </div>
-                    <p>id estacion: {parada.idParada}</p>
+                    {/* <p>id estacion: {parada.idParada}</p> */}
                 </div>
             </Popup>
 
