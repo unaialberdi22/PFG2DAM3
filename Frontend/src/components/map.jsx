@@ -45,7 +45,6 @@ return(
                     </div>
                     <div className="insignias">
                         {[...new Set(rutaSelecionada.map(ruta => ruta.tipo))].map((tipo, index) => {
-                                // <p key={index}>{tipo}</p>
                                 return<img title={tipo.toUpperCase()} src={"/src/images/" + tipo + ".png"}  width={20.2} height={24.4} alt="icono Minusvalidos" />
                         })}
                         <img title={(parseInt(parada.accesoMinus) === 1) ? 'Acceso para minusválidos' : ''} src={minus} style={{ visibility: (parseInt(parada.accesoMinus) === 2) ? 'hidden' : 'visible' }} width={24.4} height={24.4} alt="icono Minusvalidos" />
@@ -56,11 +55,6 @@ return(
 
             </Marker>
         })}
-        {/* <Marker position={[40.463667, -3.74922]}>
-            <Popup>
-                AL LORO
-            </Popup>
-        </Marker> */}
     </MapContainer>
 </div>
 );
