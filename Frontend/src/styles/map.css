@@ -26,6 +26,7 @@
 
 .seleccionador{
     display: flex;
+    flex-direction: column;
     background-color:rgba(219, 219, 219, 0.712); 
     border: 2px solid rgba(136, 136, 136, 0.836);
     height: 50vh; 
@@ -35,9 +36,10 @@
     margin-top: 12vh;
     margin-left: 4vh;
     border-radius: 2vh;
+    overflow-y: auto;
 }
 
-.mapaObjeto{
+#mapaObjeto{
     height: 100%;
     width: 100%;
     z-index: 0;
