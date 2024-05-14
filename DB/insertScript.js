@@ -41,6 +41,23 @@ connection.connect(err => {
   }
   console.log('Conexión establecida a la base de datos');
 
+  function executeQuery(query) {
+    return new Promise((resolve, reject) => {
+      connection.query(query, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
+
+  executeQuery('SELECT * FROM agencias LIMIT 1')
+  .then(result => {
+    if(result.length === 0){
+      console.log("DB vacia, insertando datos")
+
   // Directorio donde se encuentran los archivos CSV
   const directorio = './data/';
 
@@ -129,5 +146,9 @@ connection.connect(err => {
         console.log('Proceso completado para el archivo CSV:', csvFile);
       });
     });
+  });
+  }else{
+    console.log("DB existente, omitiendo insercion")
+  }
   });
 });

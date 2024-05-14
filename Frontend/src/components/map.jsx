@@ -41,15 +41,15 @@ function getRutasByParadaId(idParada){
         console.error("Error al obtener las rutas:", error);
     });
 }
-function MapClick() {
-    useMapEvents({
-      click(event) {
-        setEstacionSeleccionada([])
-      },
-    });
+// function MapClick() {
+//     useMapEvents({
+//       click(event) {
+//         setEstacionSeleccionada([])
+//       },
+//     });
   
-    return null;
-  }
+//     return null;
+// }
 
   const tiposUnicos = [...new Set(estacionSeleccionada.map(ruta => ruta.tipo))];
 
@@ -58,6 +58,7 @@ return(
         {estacionSeleccionada.length > 0 && (
             <div className="seleccionador">
                 <h2 style={{color: "black"}}>Seleccione ruta</h2>
+                <h3 style={{color: "black"}}>Seleccione ruta</h3>
 
                 {tiposUnicos.map((tipo, index) => (
                 <div key={index}>
@@ -112,7 +113,7 @@ return(
 
                     </Marker>
                 })}
-                <MapClick/>
+                {/* <MapClick/> */}
             </MapContainer>
 </div>
 );
