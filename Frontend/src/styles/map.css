@@ -33,11 +33,27 @@
     width: 40vh;
     position: absolute;
     z-index: 1;
-    margin-top: 12vh;
+    margin-top: 8vh;
     margin-left: 4vh;
     border-radius: 2vh;
     overflow-y: auto;
 }
+
+.horarios{
+    display: flex;
+    flex-direction: column;
+    background-color:rgba(219, 219, 219, 0.712); 
+    border: 2px solid rgba(136, 136, 136, 0.836);
+    height: 30vh; 
+    width: 40vh;
+    position: absolute;
+    z-index: 1;
+    margin-top: 60vh;
+    margin-left: 4vh;
+    border-radius: 2vh;
+    overflow-y: auto;
+}
+
 
 #mapaObjeto{
     height: 100%;

@@ -13,6 +13,7 @@ export default function Map() {
 const [paradas, setParadas] = useState([])
 const [estacionSeleccionada, setEstacionSeleccionada] = useState([]) 
 const [rutaSelecionada, setRutaSeleccionada] = useState([])  
+const [paradaSeleccionada, setParadaSeleccionada] = useState([])
     
 
 useEffect(() => {
@@ -25,13 +26,9 @@ useEffect(() => {
     })
 }, [])
 
-useEffect(() => {
-    console.log(estacionSeleccionada)
-}, [estacionSeleccionada])
-
-function getRutasByParadaId(idParada){
-    console.log("Has clickado en parada con id " + idParada)
-    axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${idParada}`).then(response => {
+function getRutasByParadaId(parada){
+    setParadaSeleccionada(parada)
+    axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${parada.idParada}`).then(response => {
         if(response.data?.rutas){
             setEstacionSeleccionada(response.data.rutas);
             console.log("rutas recibidas")
@@ -41,23 +38,28 @@ function getRutasByParadaId(idParada){
         console.error("Error al obtener las rutas:", error);
     });
 }
-// function MapClick() {
-//     useMapEvents({
-//       click(event) {
-//         setEstacionSeleccionada([])
-//       },
-//     });
-  
-//     return null;
-// }
 
-  const tiposUnicos = [...new Set(estacionSeleccionada.map(ruta => ruta.tipo))];
+function getHorariosByRutas(ruta, idparada){
+    console.log(ruta)
+    // setParadaSeleccionada(parada)
+    // axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${parada.idParada}`).then(response => {
+    //     if(response.data?.rutas){
+    //         setEstacionSeleccionada(response.data.rutas);
+    //         console.log("rutas recibidas")
+    //         console.log(response.data.rutas)
+    //     }
+    // }).catch(error => {
+    //     console.error("Error al obtener las rutas:", error);
+    // });
+}
+
+const tiposUnicos = [...new Set(estacionSeleccionada.map(ruta => ruta.tipo))];
 
 return(
     <div className="Mapa">
         {estacionSeleccionada.length > 0 && (
             <div className="seleccionador">
-                <h2 style={{color: "black"}}>Seleccione ruta</h2>
+                <h2 style={{color: "black"}}>Estacion de tren {paradaSeleccionada.nombreParada}</h2>
                 <h3 style={{color: "black"}}>Seleccione ruta</h3>
 
                 {tiposUnicos.map((tipo, index) => (
@@ -70,7 +72,7 @@ return(
                     {estacionSeleccionada
                         .filter(r => r.tipo === tipo)
                         .map((ruta, i) => (
-                            <button key={i} onClick={() => console.log("ruta " + ruta.idRuta + " clickada")}>
+                            <button key={i} onClick={() => getHorariosByRutas(ruta.idRuta, paradaSeleccionada.idParada)}>
                             {ruta.idRuta}
                             </button>
                         ))}
@@ -80,6 +82,11 @@ return(
                 ))}
             </div>
         )}
+        {rutaSelecionada.length > 0 && (
+            <div className="horarios">
+                
+            </div>
+        )}
             <MapContainer id="mapaObjeto" center={[40.463667, -3.74922]} zoom={6} scrollWheelZoom={true}>
                 <TileLayer
                     url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
@@ -87,7 +94,8 @@ return(
                 {paradas.map((parada, index) =>{
                     return <Marker key={index} eventHandlers={{
                         click: (e) => {
-                        getRutasByParadaId(parada.idParada)
+                            console.log(parada)
+                        getRutasByParadaId(parada)
                         },
                     }} position={[parada.latitud, parada.longitud]} icon={new Icon({ iconUrl: markerIconPng, iconAnchor: [13, 10] })}>
                     <Popup>

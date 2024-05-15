@@ -5,7 +5,7 @@ const getRutasByParadaId = async (req, res) => {
 
     try {
         // Buscar la parada correspondiente
-        const parada = await db.paradas.findOne({
+        const x = await db.paradas.findOne({
             where: { idParada: idParada }
         });
 
