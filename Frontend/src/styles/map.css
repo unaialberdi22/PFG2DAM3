@@ -54,9 +54,26 @@
     overflow-y: auto;
 }
 
+.divHorario{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.divHorario p {
+    color: black;
+}
+
 
 #mapaObjeto{
     height: 100%;
     width: 100%;
     z-index: 0;
+}
+
+.logo{
+    position: absolute;
+    z-index: 1;
+    top: 2vh;
+    right: 5vh;
 }

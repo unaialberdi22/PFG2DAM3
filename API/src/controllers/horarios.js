@@ -32,7 +32,7 @@ const getHorariosByRutas = async (req, res) => {
     const seqParada = primerHorario.seqParada;
 
     // Buscar todos los horarios desde la parada específica en adelante
-    const horariosPosteriores = await db.horarios.findAll({
+    const horarios = await db.horarios.findAll({
         where: {
             idViaje: idViajes,
             seqParada: { [Op.gte]: seqParada }
@@ -40,14 +40,14 @@ const getHorariosByRutas = async (req, res) => {
     });
 
     // Obtener los detalles de las paradas para los horarios encontrados
-    const paradasIds = horariosPosteriores.map(horario => horario.idParada);
+    const paradasIds = horarios.map(horario => horario.idParada);
     const paradas = await db.paradas.findAll({
         where: { idParada: paradasIds },
         attributes: ['idParada', 'nombreParada', 'latitud', 'longitud']
     });
 
     // Combinar los resultados de horarios y paradas en un solo JSON
-    const horariosConParadas = horariosPosteriores.map(horario => {
+    const horariosConParadas = horarios.map(horario => {
         const parada = paradas.find(p => p.idParada === horario.idParada);
         return {
             idViaje: horario.idViaje,
@@ -61,7 +61,7 @@ const getHorariosByRutas = async (req, res) => {
 
     return res.status(200).json({
         status: 200,
-        horariosPosteriores: horariosConParadas
+        horarios: horariosConParadas
     });
 };
 

@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline} from "react-leaflet";
 import '../../node_modules/leaflet/dist/leaflet.css';
 import '../styles/map.css';
 import markerIconPng from "leaflet/dist/images/marker-icon.png";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 //imagenes
 import minus from '../images/minus.png';
+import logo from '../images/RENFE.png';
 
 export default function Map() {
 const [paradas, setParadas] = useState([])
@@ -27,6 +28,7 @@ useEffect(() => {
 }, [])
 
 function getRutasByParadaId(parada){
+    setRutaSeleccionada([])
     console.log("dentro parada")
     setParadaSeleccionada(parada)
     axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${parada.idParada}`).then(response => {
@@ -40,25 +42,46 @@ function getRutasByParadaId(parada){
     });
 }
 
-function getHorariosByRutas(ruta, idparada){
+function getHorariosByRutas(ruta, idParada){
+    setRutaSeleccionada([]);
     console.log(ruta)
-    console.log(idparada)
-    // setParadaSeleccionada(parada)
-    // axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${parada.idParada}`).then(response => {
-    //     if(response.data?.rutas){
-    //         setEstacionSeleccionada(response.data.rutas);
-    //         console.log("rutas recibidas")
-    //         console.log(response.data.rutas)
-    //     }
-    // }).catch(error => {
-    //     console.error("Error al obtener las rutas:", error);
-    // });
+    console.log(idParada)
+    axios.get(import.meta.env.VITE_API_URL + `/horarios/getSelectedHorarios/${ruta}/${idParada}`).then(response => {
+        if(response.data?.horarios){
+            console.log(response.data, "dentro response")
+            setRutaSeleccionada(response.data.horarios);
+            console.log(rutaSelecionada,"horarios recibidos")
+        }
+    }).catch(error => {
+        console.error("Error al obtener las rutas:", error);
+    });
 }
 
 const tiposUnicos = [...new Set(estacionSeleccionada.map(ruta => ruta.tipo))];
 
+const horariosEstacionSeleccionada = rutaSelecionada.filter(
+    (horario) => horario.idParada === paradaSeleccionada.idParada
+);
+
+horariosEstacionSeleccionada.sort((a, b) => {
+    const horaSalidaA = new Date(`01/01/2000 ${a.horaSalida}`);
+    const horaSalidaB = new Date(`01/01/2000 ${b.horaSalida}`);
+    return horaSalidaA - horaSalidaB;
+});
+
+const viajeMasLargo = rutaSelecionada.length > 0 ? rutaSelecionada.reduce((viajeAnterior, viajeActual) => {
+    return viajeAnterior.seqParada > viajeActual.seqParada ? viajeAnterior : viajeActual;
+}) : null;
+
+const horariosViajeMasLargo = rutaSelecionada.filter((horario) => horario.idViaje === viajeMasLargo.idViaje);
+
+const coordenadas = horariosViajeMasLargo.map(horario => [parseFloat(horario.latitud), parseFloat(horario.longitud)]);
+
 return(
     <div className="Mapa">
+        <div className="logo">
+            <img title={"Logo Renfe"} onClick={() => window.open('https://www.renfe.com/es/es', '_blank')} src={logo} width={200} height={90}/>
+        </div>
         {estacionSeleccionada.length > 0 && (
             <div className="seleccionador">
                 <h2 style={{color: "black"}}>Estacion de tren {paradaSeleccionada.nombreParada}</h2>
@@ -87,15 +110,27 @@ return(
         )}
         {rutaSelecionada.length > 0 && (
             <div className="horarios">
-                
+                <div className="divHorario">
+                    <p><b>ID Viaje</b></p>
+                    <p><b>Hora Salida</b></p>
+                </div>
+                {horariosEstacionSeleccionada.map((horario, index) => (
+                    <div className="divHorario" key={index}>
+                        <p>{horario.idViaje.substring(0, 6)}</p>
+                        <p>{horario.horaSalida}</p>
+                    </div>
+                ))}
             </div>
         )}
             <MapContainer id="mapaObjeto" center={[40.463667, -3.74922]} zoom={6} scrollWheelZoom={true}>
                 <TileLayer
                     url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
                 />
+                {coordenadas.length > 0 && 
+                <Polyline positions={coordenadas} color="#880063" weight={6}/>
+                }
                 {paradas.map((parada, index) =>{
-                    return <Marker key={index} eventHandlers={{
+                    return <Marker key={index} title={parada.nombreParada} eventHandlers={{
                         click: (e) => {
                             console.log(parada)
                             getRutasByParadaId(parada)
@@ -109,7 +144,7 @@ return(
                             </div>
                             <div className="insignias">
                                 {tiposUnicos.map((tipo, index) => {
-                                        return<img title={tipo.toUpperCase()} src={"/src/images/" + tipo.toUpperCase() + ".png"}  width={20.2} height={24.4} alt="logo tipo tren" />
+                                        return<img title={tipo.toUpperCase()} key={index} src={"/src/images/" + tipo.toUpperCase() + ".png"}  width={20.2} height={24.4} alt="logo tipo tren" />
                                 })}
                                 <img title={(parseInt(parada.accesoMinus) === 1) ? 'Acceso para minusválidos' : ''} src={minus} style={{ visibility: (parseInt(parada.accesoMinus) === 2) ? 'hidden' : 'visible' }} width={24.4} height={24.4} alt="icono Minusvalidos" />
                             </div>
