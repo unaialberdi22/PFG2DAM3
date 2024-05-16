@@ -17,5 +17,11 @@ export default (sequelize, DataTypes) => {
       }, {
         timestamps: false
       });
+
+        // Define la asociación
+        Horarios.associate = (models) => {
+            // Un horario pertenece a una parada
+            Horarios.belongsTo(models.paradas, { foreignKey: 'idParada', as: 'parada' });
+        };
       return Horarios
 }

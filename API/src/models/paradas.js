@@ -20,5 +20,7 @@ export default (sequelize, DataTypes) => {
       }, {
         timestamps: false
       });
+
+      
       return Paradas
 }

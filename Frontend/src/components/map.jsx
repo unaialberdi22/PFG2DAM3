@@ -27,6 +27,7 @@ useEffect(() => {
 }, [])
 
 function getRutasByParadaId(parada){
+    console.log("dentro parada")
     setParadaSeleccionada(parada)
     axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${parada.idParada}`).then(response => {
         if(response.data?.rutas){
@@ -41,6 +42,7 @@ function getRutasByParadaId(parada){
 
 function getHorariosByRutas(ruta, idparada){
     console.log(ruta)
+    console.log(idparada)
     // setParadaSeleccionada(parada)
     // axios.get(import.meta.env.VITE_API_URL + `/rutas/getRutasByParadaId/${parada.idParada}`).then(response => {
     //     if(response.data?.rutas){
@@ -63,10 +65,11 @@ return(
                 <h3 style={{color: "black"}}>Seleccione ruta</h3>
 
                 {tiposUnicos.map((tipo, index) => (
+                console.log(tipo.toUpperCase()),
                 <div key={index}>
                     <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly"}}>
                         <h3 style={{color: "black"}}>{tipo}</h3>
-                        <img title={tipo.toUpperCase()} src={"/src/images/" + tipo + ".png"}  width={46} height={53} alt="logo tipo tren" />
+                        <img title={tipo.toUpperCase()} src={"/src/images/" + tipo.toUpperCase() + ".png"}  width={46} height={53} alt="logo tipo tren" />
                     </div>
 
                     {estacionSeleccionada
@@ -95,7 +98,7 @@ return(
                     return <Marker key={index} eventHandlers={{
                         click: (e) => {
                             console.log(parada)
-                        getRutasByParadaId(parada)
+                            getRutasByParadaId(parada)
                         },
                     }} position={[parada.latitud, parada.longitud]} icon={new Icon({ iconUrl: markerIconPng, iconAnchor: [13, 10] })}>
                     <Popup>
@@ -106,7 +109,7 @@ return(
                             </div>
                             <div className="insignias">
                                 {tiposUnicos.map((tipo, index) => {
-                                        return<img title={tipo.toUpperCase()} src={"/src/images/" + tipo + ".png"}  width={20.2} height={24.4} alt="logo tipo tren" />
+                                        return<img title={tipo.toUpperCase()} src={"/src/images/" + tipo.toUpperCase() + ".png"}  width={20.2} height={24.4} alt="logo tipo tren" />
                                 })}
                                 <img title={(parseInt(parada.accesoMinus) === 1) ? 'Acceso para minusválidos' : ''} src={minus} style={{ visibility: (parseInt(parada.accesoMinus) === 2) ? 'hidden' : 'visible' }} width={24.4} height={24.4} alt="icono Minusvalidos" />
                             </div>

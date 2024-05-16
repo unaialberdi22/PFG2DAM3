@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path";
-import { Sequelize, DataTypes } from '@sequelize/core';
+import { Sequelize, DataTypes  } from '@sequelize/core';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from "module";

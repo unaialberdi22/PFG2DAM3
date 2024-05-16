@@ -1,37 +1,70 @@
 import db from "../models/index.js"
+import { Op } from '@sequelize/core';
 // const { Viaje, Horario } = db;
 
 const getHorariosByRutas = async (req, res) => {
-    const { idRuta, idParada } = req.params;
+    const { idParada, idRuta } = req.params;
 
-    try {
-        // Paso 1: Buscar los viajes asociados a la idRuta
-        const viajes = await db.viajes.findAll({
-            where: {
-                idRuta: idRuta
-            }
+    // Buscar los viajes que pertenecen a la ruta especificada
+    const viajes = await db.viajes.findAll({
+        where: { idRuta: idRuta }
+    });
+
+    // Obtener los idViaje de los viajes encontrados
+    const idViajes = viajes.map(viaje => viaje.idViaje);
+
+    // Buscar el primer horario de la parada específica en la ruta
+    const primerHorario = await db.horarios.findOne({
+        where: {
+            idViaje: idViajes,
+            idParada: idParada
+        },
+        order: [['seqParada', 'ASC']]
+    });
+
+    if (!primerHorario) {
+        return res.status(404).json({
+            status: 404,
+            message: "No se encontraron horarios para la parada especificada en la ruta."
         });
-
-        // Paso 2: Obtener los horarios correspondientes a esos viajes
-        const idViajes = viajes.map(viaje => viaje.idViaje);
-        const horarios = await db.horarios.findAll({
-            where: {
-                idViaje: idViajes
-            }
-        });
-
-        // Paso 3: Filtrar los horarios para obtener las líneas desde la parada seleccionada en adelante
-        const horariosDesdeParada = horarios.filter(horario => {
-            return horario.seqParada >= idParada;
-        });
-
-        // Devolver los horarios filtrados como respuesta
-        res.json(horariosDesdeParada);
-    } catch (error) {
-        // Manejo de errores
-        console.error("Error al obtener los horarios:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
     }
+
+    const seqParada = primerHorario.seqParada;
+
+    // Buscar todos los horarios desde la parada específica en adelante
+    const horariosPosteriores = await db.horarios.findAll({
+        where: {
+            idViaje: idViajes,
+            seqParada: { [Op.gte]: seqParada }
+        }
+    });
+
+    // Obtener los detalles de las paradas para los horarios encontrados
+    const paradasIds = horariosPosteriores.map(horario => horario.idParada);
+    const paradas = await db.paradas.findAll({
+        where: { idParada: paradasIds },
+        attributes: ['idParada', 'nombreParada', 'latitud', 'longitud']
+    });
+
+    // Combinar los resultados de horarios y paradas en un solo JSON
+    const horariosConParadas = horariosPosteriores.map(horario => {
+        const parada = paradas.find(p => p.idParada === horario.idParada);
+        return {
+            idViaje: horario.idViaje,
+            horaSalida: horario.horaSalida,
+            idParada: horario.idParada,
+            seqParada: horario.seqParada,
+            latitud: parada ? parada.latitud : null,
+            longitud: parada ? parada.longitud : null
+        };
+    });
+
+    return res.status(200).json({
+        status: 200,
+        horariosPosteriores: horariosConParadas
+    });
 };
 
-export default getHorariosByRutas;
+export  {
+    getHorariosByRutas
+}
