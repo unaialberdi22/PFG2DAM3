@@ -75,8 +75,22 @@ const viajeMasLargo = rutaSelecionada.length > 0 ? rutaSelecionada.reduce((viaje
 
 const horariosViajeMasLargo = rutaSelecionada.filter((horario) => horario.idViaje === viajeMasLargo.idViaje);
 
-const coordenadas = horariosViajeMasLargo.map(horario => [parseFloat(horario.latitud), parseFloat(horario.longitud)]);
+const horariosViajeMasLargoOrdenado = horariosViajeMasLargo.sort((a, b) => {
+  return parseInt(a.seqParada) - parseInt(b.seqParada);
+});
 
+const coordenadas = horariosViajeMasLargoOrdenado.map(horario => [parseFloat(horario.latitud), parseFloat(horario.longitud)]);
+
+let primerNombreParada = '';
+let ultimaNombreParada = '';
+
+if(horariosViajeMasLargoOrdenado.length > 0){
+const primerParada = horariosViajeMasLargoOrdenado[0];
+const ultimaParada = horariosViajeMasLargoOrdenado[horariosViajeMasLargoOrdenado.length - 1];
+console.log(primerParada)
+primerNombreParada = paradas.find(parada => parada.idParada === primerParada.idParada)?.nombreParada;
+ultimaNombreParada = paradas.find(parada => parada.idParada === ultimaParada.idParada)?.nombreParada;
+}
 return(
     <div className="Mapa">
         <div className="logo">
@@ -110,6 +124,8 @@ return(
         )}
         {rutaSelecionada.length > 0 && (
             <div className="horarios">
+                {console.log(horariosViajeMasLargoOrdenado)}
+                <h2 style={{color: "black"}}>{primerNombreParada} - {ultimaNombreParada}</h2>
                 <div className="divHorario">
                     <p><b>ID Viaje</b></p>
                     <p><b>Hora Salida</b></p>
